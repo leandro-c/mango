@@ -8,9 +8,10 @@ const Tracks = ({ values }: { values: number[] }) => {
                 position: "absolute",
                 top: "-2px",
                 width: "1px",
-                height: "5px",
+                height: "10px",
                 background: "white",
-                left: `${v}%`
+                left: `${v}%`,
+                borderLeft: "2px solid black"
             }} />)
         }
     </div>;

@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle }  
 import { BulletValues } from '@/utils/interfaces/interfaces'
 import styles from './Bullet.module.css'
 
-// eslint-disable-next-line react/display-name
 const Bullet  = forwardRef(({ values, sliderRect, onChange }: { values: BulletValues, sliderRect: DOMRect, onChange: (value: number) => void, className?: string }, ref) => {
     const [dragging, setDragging] = useState(false);
     const bulletRef = useRef<HTMLSpanElement>(null);
@@ -11,7 +10,7 @@ const Bullet  = forwardRef(({ values, sliderRect, onChange }: { values: BulletVa
     const { min, max, value, dataTestId } = values;
     
     useImperativeHandle(
-        ref as any,
+        ref,
         () => ({
             update: (v: number) => move(v)
         }),
@@ -73,4 +72,8 @@ const Bullet  = forwardRef(({ values, sliderRect, onChange }: { values: BulletVa
         data-testid={dataTestId}
     />;
 });
+
+
+Bullet.displayName = 'Bullet';
+
 export default Bullet

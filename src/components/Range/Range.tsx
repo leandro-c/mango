@@ -18,11 +18,11 @@ const Range = ({
 }: RangeProps) => {
     const sliderRef = useRef<HTMLDivElement>(null);
     const [sliderRect, setSliderRect] = useState<DOMRect | undefined>();
-    const [minimo, setMinimo] = useState<number>();
-    const [maximo, setMaximo] = useState<number>();
+    const [localMin, setLocalMin] = useState<number>();
+    const [localMax, setLocalMax] = useState<number>();
 
-    const [bullet1, setBullet1] = useState<BulletValues>();
-    const [bullet2, setBullet2] = useState<BulletValues>();
+    const [xPositionBullet1, setXPositionBullet1] = useState<BulletValues>();
+    const [xPositionBullet2, setXPositionBullet2] = useState<BulletValues>();
     const bullet1Ref = useRef<BulletRef>(null);
     const bullet2Ref = useRef<BulletRef>(null);
     
@@ -38,41 +38,41 @@ const Range = ({
 
     useEffect(() => {
         if (bullet1Ref?.current && bullet2Ref.current) {
-            bullet1Ref.current.update(bullet1?.value ?? 0);
-            bullet2Ref.current.update(bullet2?.value ?? 0);
+            bullet1Ref.current.update(xPositionBullet1?.value ?? 0);
+            bullet2Ref.current.update(xPositionBullet2?.value ?? 0);
         }
-        if (typeof bullet1?.value === "undefined" || typeof bullet2?.value === "undefined" || typeof onChange === "undefined") return;
+        if (typeof xPositionBullet1?.value === "undefined" || typeof xPositionBullet2?.value === "undefined" || typeof onChange === "undefined") return;
         onChange?.({
-            min: Math.round((bullet1.value ?? 0) * 100) / 100,
-            max: Math.round((bullet2.value ?? 0) * 100) / 100
+            min: Math.round((xPositionBullet1.value ?? 0) * 100) / 100,
+            max: Math.round((xPositionBullet2.value ?? 0) * 100) / 100
         });
-    }, [bullet1, bullet2]);
+    }, [xPositionBullet1, xPositionBullet2]);
 
-    const { percentToValue, valueToPercent } = useConverter(sliderRect?.width, minimo ?? 0, maximo ?? 100);
+    const { percentToValue, valueToPercent } = useConverter(sliderRect?.width, localMin ?? 0, localMax ?? 100);
 
     const reset = () => {
         if (!sliderRect) return;
-        const minimoAbsoluto = Array.isArray(rangeValues) && rangeValues.length > 0 ? rangeValues[0] : min || 0;
-        const maximoAbsoluto = Array.isArray(rangeValues) && rangeValues.length > 0 ? rangeValues[rangeValues.length - 1] : max || 100;
-        setMinimo(minimoAbsoluto);
-        setMaximo(maximoAbsoluto);
-        const valorBullet1 = typeof defaultValue?.min !== "undefined" && defaultValue.min! >= minimoAbsoluto ? defaultValue.min! : minimoAbsoluto;
-        const valorBullet2 = typeof defaultValue?.max !== "undefined" && defaultValue.max! <= maximoAbsoluto ? defaultValue.max! : maximoAbsoluto;
-        setBullet1({
-            min: valueToPercent(minimoAbsoluto),
-            max: valueToPercent(maximoAbsoluto),
+        const absoluteMinimum = Array.isArray(rangeValues) && rangeValues.length > 0 ? rangeValues[0] : min || 0;
+        const absoluteMaximum = Array.isArray(rangeValues) && rangeValues.length > 0 ? rangeValues[rangeValues.length - 1] : max || 100;
+        setLocalMin(absoluteMinimum);
+        setLocalMax(absoluteMaximum);
+        const valorBullet1 = typeof defaultValue?.min !== "undefined" && defaultValue.min! >= absoluteMinimum ? defaultValue.min! : absoluteMinimum;
+        const valorBullet2 = typeof defaultValue?.max !== "undefined" && defaultValue.max! <= absoluteMaximum ? defaultValue.max! : absoluteMaximum;
+        setXPositionBullet1({
+            min: valueToPercent(absoluteMinimum),
+            max: valueToPercent(absoluteMaximum),
             value: valueToPercent(valorBullet1),
             dataTestId: 'bullet1'
         });
-        setBullet2({
-            min: valueToPercent(minimoAbsoluto),
-            max: valueToPercent(maximoAbsoluto),
+        setXPositionBullet2({
+            min: valueToPercent(absoluteMinimum),
+            max: valueToPercent(absoluteMaximum),
             value: valueToPercent(valorBullet2),
             dataTestId: 'bullet2'
         });
     };
 
-    const normalizar = (value: number, arr?: number[]): number => {
+    const normalize = (value: number, arr?: number[]): number => {
         const real = percentToValue(value);
         if (Array.isArray(arr) && arr.length > 0) {
             const proximo = arr.reduce((prev, curr) => Math.abs(curr - real) < Math.abs(prev - real) ? curr : prev);
@@ -82,14 +82,14 @@ const Range = ({
         return valueToPercent(proximo);
     };
 
-    const getPosiblesValores = (desde?: number, hasta?: number): number[] | undefined => {
+    const getPotentialValues = (from?: number, to?: number): number[] | undefined => {
         if (Array.isArray(rangeValues) && rangeValues.length > 0) {
-            if (typeof desde !== "undefined") {
-                const index = rangeValues.indexOf(percentToValue(desde));
+            if (typeof from !== "undefined") {
+                const index = rangeValues.indexOf(percentToValue(from));
                 return rangeValues.slice(index + 1);
             }
-            if (typeof hasta !== "undefined") {
-                const index = rangeValues.indexOf(percentToValue(hasta));
+            if (typeof to !== "undefined") {
+                const index = rangeValues.indexOf(percentToValue(to));
                 return rangeValues.slice(0, index);
             }
         }
@@ -97,47 +97,48 @@ const Range = ({
     };
 
     const handlerChange = (value: number, bullet: string) => {
-        const realBullet1 = percentToValue(bullet1!.value);
-        const realBullet2 = percentToValue(bullet2!.value);
+        const realBullet1 = percentToValue(xPositionBullet1!.value);
+        const realBullet2 = percentToValue(xPositionBullet2!.value);
 
         if (bullet === "bullet1") {
-            let newValue = normalizar(value, getPosiblesValores(undefined, bullet2!.value));
+            let newValue = normalize(value, getPotentialValues(undefined, xPositionBullet2!.value));
             if (minDistance! > 0 && Math.abs(percentToValue(newValue) - realBullet2) < minDistance!) {
                 newValue = valueToPercent(realBullet2 - minDistance!);
             }
-            setBullet1(prev => ({ ...prev!, value: newValue }));
-            setBullet2(prev => ({ ...prev!, min: newValue }));
+            setXPositionBullet1(prev => ({ ...prev!, value: newValue }));
+            setXPositionBullet2(prev => ({ ...prev!, min: newValue }));
         } else if (bullet === "bullet2") {
-            let newValue = normalizar(value, getPosiblesValores(bullet1!.value));
+            let newValue = normalize(value, getPotentialValues(xPositionBullet1!.value));
 
             if (minDistance! > 0 && Math.abs(percentToValue(newValue) - realBullet1) < minDistance!) {
                 newValue = valueToPercent(realBullet1 + minDistance!);
             }
-            setBullet2(prev => ({ ...prev!, value: newValue }));
-            setBullet1(prev => ({ ...prev!, max: newValue }));
+            setXPositionBullet2(prev => ({ ...prev!, value: newValue }));
+            setXPositionBullet1(prev => ({ ...prev!, max: newValue }));
         }
     };
 
-    const renderBullets = sliderRect && bullet1 && bullet2;
+    const renderBullets = sliderRect && xPositionBullet1 && xPositionBullet2;
+
     return (
         <div className={`${styles.range}`} >
             <div className={styles.rangeWrapper}>
                 <Label
-                    text={`${minimo}`}
-                    onClick={!clickOnLabel ? undefined : () => handlerChange(valueToPercent(minimo!), "bullet1")}
+                    text={`${localMin}`}
+                    onClick={!clickOnLabel ? undefined : () => handlerChange(valueToPercent(localMin!), "bullet1")}
                 />
                 <Slider ref={sliderRef}>
                     {renderBullets &&
                         <>
                             <Bullet
-                                values={bullet1!}
+                                values={xPositionBullet1!}
                                 sliderRect={sliderRect}
                                 onChange={(value) => handlerChange(value, "bullet1")}
                                 ref={bullet1Ref}
                                 data-testid="bullet1"
                             />
                             <Bullet
-                                values={bullet2!}
+                                values={xPositionBullet2!}
                                 sliderRect={sliderRect}
                                 onChange={(value) => handlerChange(value, "bullet2")}
                                 ref={bullet2Ref}
@@ -148,8 +149,8 @@ const Range = ({
                     {rangeValues && <Tracks values={rangeValues.map(v => valueToPercent(v))} />}
                 </Slider>
                 <Label
-                    text={`${maximo}`}
-                    onClick={!clickOnLabel ? undefined : () => handlerChange(valueToPercent(maximo!), "bullet2")}
+                    text={`${localMax}`}
+                    onClick={!clickOnLabel ? undefined : () => handlerChange(valueToPercent(localMax!), "bullet2")}
                 />
             </div>
         </div>
