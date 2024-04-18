@@ -19,7 +19,7 @@ function Exercise1(props: Props) {
         getExercise('exercise1').then(setValues).catch((error)=>alert(`Handle Error - ${error}`))
     }, [])
 
-    const change = (value:any) => {
+    const change = (value:Values) => {
         setValue(value)
     }
     

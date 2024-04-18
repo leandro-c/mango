@@ -57,4 +57,9 @@ describe('Range component', () => {
         const component = render(<Range max={5} />)
         component.getByText("5")
     })
+  test("render component with rangeValue parameter", () => {
+        const component = render(<Range rangeValues={[1, 2, 3]} />)
+        component.getByText("1")
+        component.getByText("3")
+    })
 });
