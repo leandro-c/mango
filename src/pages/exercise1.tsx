@@ -23,14 +23,13 @@ function Exercise1(props: Props) {
         setValue(value)
     }
     
-
     return (
         <>
             <div>
                 <h1>Range Component Exercise 1</h1>
                 <div>
                     <Range clickOnLabel min={values.min} max={values.max} minDistance={5}  onChange={change} />
-                    {value && <p>Min: ${value.min}, Max: ${value.max}</p>}
+                    {value && <p>Min: €{value.min}, Max: €{value.max}</p>}
                 </div>
                 <button onClick={()=>router.push("/")}>home</button>
             </div>

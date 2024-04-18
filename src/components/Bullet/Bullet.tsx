@@ -58,9 +58,11 @@ const Bullet  = forwardRef(({ values, sliderRect, onChange }: { values: BulletVa
     };
 
     const move = (value: number) => {
-        const pos = `calc(${value}% - ${widthRef.current}px)`;
-        bulletRef.current!.style.left = pos;
-        lastPosX.current = value;
+        if (!isNaN(value)) {
+            const pos = `calc(${value}% - ${widthRef.current}px)`;
+            bulletRef.current!.style.left = pos;
+            lastPosX.current = value;
+        }
     };
 
     return <span

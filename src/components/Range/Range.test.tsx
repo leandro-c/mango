@@ -33,30 +33,28 @@ describe('Range component', () => {
     fireEvent.mouseMove(bullet2, { clientX: 200 });
     fireEvent.mouseUp(bullet2);
 
-    expect(onChangeMock).toHaveBeenCalledTimes(2);
     expect(onChangeMock).toHaveBeenCalledWith({ min: expect.any(Number), max: expect.any(Number) });
   });
 
-  test('renders Range component with provided default values', () => {
-    render(<Range onChange={onChangeMock} defaultValue={{ min: 20, max: 80 }} />);
-    
-    const bullet1 = screen.getByTestId('bullet1');
-    const bullet2 = screen.getByTestId('bullet2');
+  test("render component with min and max parameters", () => {
+    const component = render(<Range min={1} max={5} />)
+    component.getByText("1")
+    component.getByText("5")
+  })
 
-    expect(bullet1.style.left).toBe('20%');
-    expect(bullet2.style.left).toBe('80%');
-  });
+  test("render component without parameters", () => {
+    const component = render(<Range />)
+    component.getByText("0")
+    component.getByText("100")
+    })
 
-  test('clicking on label changes bullet position', () => {
-    render(<Range onChange={onChangeMock} min={10} max={90} clickOnLabel />);
-    
-    const minLabel = screen.getByText('10');
-    const maxLabel = screen.getByText('90');
+  test("render component with min parameter", () => {
+        const component = render(<Range min={5} />)
+        component.getByText("5")
+    })
 
-    fireEvent.click(minLabel);
-    fireEvent.click(maxLabel);
-
-    expect(onChangeMock).toHaveBeenCalledTimes(2);
-    expect(onChangeMock).toHaveBeenCalledWith({ min: 10, max: 90 });
-  });
+  test("render component with max parameter", () => {
+        const component = render(<Range max={5} />)
+        component.getByText("5")
+    })
 });

@@ -7,6 +7,8 @@ Run app
 
 ```bash
 npm run dev
+
+npm test
 ```
 # Range Component
 
@@ -52,6 +54,9 @@ You are required to create the following component: `<Range />`.
 ## Extra
 - You can use any mocked method to provide service data.
 - You can present your solution in any way you prefer.
+
+### MOCK URL
+- https://www.mockable.io/a/#/space/demo4889594/rest
 
 **HAPPY CODING!**
 
