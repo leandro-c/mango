@@ -1,0 +1,28 @@
+
+.sliderWrapper {
+	width: 100%;
+	min-width: 200px;
+	padding-top: 15px;
+}
+
+.sliderWrapper .slider {
+	height: 15px;
+	border-top: 2px solid black;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: stretch;
+	position: relative;
+}
+
+.sliderWrapper .slider .track {
+	width: 2px;
+	background: black;
+	height: 100%;
+	position: relative;
+	min-height: 15px;
+}
+
+.sliderWrapper .slider .track:last-child {
+	left: 1px;
+}
