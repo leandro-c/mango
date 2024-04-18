@@ -7,6 +7,7 @@ export interface BulletValues {
     min: number;
     max: number;
     value: number;
+    dataTestId: string;
 }
 
 export interface RangeProps {

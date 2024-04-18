@@ -8,7 +8,7 @@ const Bullet  = forwardRef(({ values, sliderRect, onChange }: { values: BulletVa
     const bulletRef = useRef<HTMLSpanElement>(null);
     const lastPosX = useRef<number>();
     const widthRef = useRef(12);
-    const { min, max, value } = values;
+    const { min, max, value, dataTestId } = values;
     
     useImperativeHandle(
         ref as any,
@@ -68,6 +68,7 @@ const Bullet  = forwardRef(({ values, sliderRect, onChange }: { values: BulletVa
         onMouseDown={mouseDown}
         className={`${styles.bullet}`}
         ref={bulletRef}
+        data-testid={dataTestId}
     />;
 });
 export default Bullet

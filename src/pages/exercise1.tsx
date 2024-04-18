@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react'
 import { useRouter } from "next/navigation";
 import Range from '@/components/Range/Range'
+import { getExercise } from '@/services/api'
 interface Props {}
 interface Values {
     min: number;
@@ -15,7 +16,7 @@ function Exercise1(props: Props) {
     
 
     useEffect(() => {
-        setValues({ min: 0, max: 100 })
+        getExercise('exercise1').then(setValues).catch((error)=>alert(`Handle Error - ${error}`))
     }, [])
 
     const change = (value:any) => {

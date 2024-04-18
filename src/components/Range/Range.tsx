@@ -30,7 +30,7 @@ const Range = ({
     useEffect(() => {
         const rect = sliderRef.current?.getBoundingClientRect();
         setSliderRect(rect);
-    }, [sliderRef?.current, rangeValues]);
+    }, [rangeValues]);
 
     useEffect(() => {
         reset();
@@ -61,12 +61,14 @@ const Range = ({
         setBullet1({
             min: valueToPercent(minimoAbsoluto),
             max: valueToPercent(maximoAbsoluto),
-            value: valueToPercent(valorBullet1)
+            value: valueToPercent(valorBullet1),
+            dataTestId: 'bullet1'
         });
         setBullet2({
             min: valueToPercent(minimoAbsoluto),
             max: valueToPercent(maximoAbsoluto),
-            value: valueToPercent(valorBullet2)
+            value: valueToPercent(valorBullet2),
+            dataTestId: 'bullet2'
         });
     };
 
